@@ -31,12 +31,16 @@ export default function NewCitizenPage() {
                 body: JSON.stringify(formData)
             });
 
-            if (!res.ok) throw new Error('Failed to create citizen');
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Failed to create citizen');
+            }
 
             router.push('/citizens');
             router.refresh();
-        } catch (error) {
-            alert('Error creating citizen');
+        } catch (error: any) {
+            console.error(error);
+            alert(error.message || 'Error creating citizen');
         } finally {
             setLoading(false);
         }
