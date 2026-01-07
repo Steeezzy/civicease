@@ -1,0 +1,130 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Assuming these exist or need to be installed
+
+export default function NewCitizenPage() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        full_name: "",
+        dob: "",
+        gender: "",
+        phone: "",
+        aadhar_number: "",
+        income: 0
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            const res = await fetch('/api/citizens', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!res.ok) throw new Error('Failed to create citizen');
+
+            router.push('/citizens');
+            router.refresh();
+        } catch (error) {
+            alert('Error creating citizen');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="max-w-2xl mx-auto space-y-6">
+            <h1 className="text-3xl font-bold tracking-tight">Register New Citizen</h1>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Basic Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="full_name">Full Name</Label>
+                                <Input
+                                    id="full_name"
+                                    required
+                                    value={formData.full_name}
+                                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="dob">Date of Birth</Label>
+                                <Input
+                                    id="dob"
+                                    type="date"
+                                    value={formData.dob}
+                                    onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="gender">Gender</Label>
+                                <select
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    value={formData.gender}
+                                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                                >
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">Phone Number</Label>
+                                <Input
+                                    id="phone"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="aadhar">Aadhar Number</Label>
+                            <Input
+                                id="aadhar"
+                                value={formData.aadhar_number}
+                                onChange={(e) => setFormData({ ...formData, aadhar_number: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="income">Annual Income</Label>
+                            <Input
+                                id="income"
+                                type="number"
+                                value={formData.income}
+                                onChange={(e) => setFormData({ ...formData, income: parseFloat(e.target.value) })}
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-2 mt-4">
+                            <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
+                            <Button type="submit" disabled={loading}>
+                                {loading ? 'Saving...' : 'Register Citizen'}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
