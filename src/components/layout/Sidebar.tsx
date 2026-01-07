@@ -36,6 +36,13 @@ export function Sidebar() {
                             Families
                         </Link>
                         <Link
+                            href="/marriages"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
+                        >
+                            <Users className="h-4 w-4" />
+                            Marriages
+                        </Link>
+                        <Link
                             href="/services/new"
                             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted"
                         >

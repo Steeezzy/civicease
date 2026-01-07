@@ -31,62 +31,111 @@ export interface Database {
             }
             families: {
                 Row: {
-                    id: string
-                    family_head_id: string | null
+                    family_id: number
+                    family_name: string | null
                     address: string | null
-                    ration_card_number: string | null
-                    total_annual_income: number | null
+                    total_income: number | null
                     created_at: string
                 }
                 Insert: {
-                    id?: string
-                    family_head_id?: string | null
+                    family_id?: number
+                    family_name?: string | null
                     address?: string | null
-                    ration_card_number?: string | null
-                    total_annual_income?: number | null
+                    total_income?: number | null
                     created_at?: string
                 }
                 Update: {
-                    id?: string
-                    family_head_id?: string | null
+                    family_id?: number
+                    family_name?: string | null
                     address?: string | null
-                    ration_card_number?: string | null
-                    total_annual_income?: number | null
+                    total_income?: number | null
                     created_at?: string
                 }
             }
-            citizens: {
+            persons: {
                 Row: {
-                    id: string
-                    full_name: string
-                    dob: string | null
+                    person_id: number
+                    family_id: number | null
+                    first_name: string
+                    last_name: string
                     gender: string | null
+                    birth_date: string | null
                     phone: string | null
                     aadhar_number: string | null
-                    family_id: string | null
-                    income: number | null
+                    annual_income: number | null
                     created_at: string
                 }
                 Insert: {
-                    id?: string
-                    full_name: string
-                    dob?: string | null
+                    person_id?: number
+                    family_id?: number | null
+                    first_name: string
+                    last_name: string
                     gender?: string | null
+                    birth_date?: string | null
                     phone?: string | null
                     aadhar_number?: string | null
-                    family_id?: string | null
-                    income?: number | null
+                    annual_income?: number | null
                     created_at?: string
                 }
                 Update: {
-                    id?: string
-                    full_name?: string
-                    dob?: string | null
+                    person_id?: number
+                    family_id?: number | null
+                    first_name?: string
+                    last_name?: string
                     gender?: string | null
+                    birth_date?: string | null
                     phone?: string | null
                     aadhar_number?: string | null
-                    family_id?: string | null
-                    income?: number | null
+                    annual_income?: number | null
+                    created_at?: string
+                }
+            }
+            marriages: {
+                Row: {
+                    marriage_id: number
+                    spouse1_id: number
+                    spouse2_id: number
+                    marriage_date: string | null
+                    divorce_date: string | null
+                    created_at: string
+                }
+                Insert: {
+                    marriage_id?: number
+                    spouse1_id: number
+                    spouse2_id: number
+                    marriage_date?: string | null
+                    divorce_date?: string | null
+                    created_at?: string
+                }
+                Update: {
+                    marriage_id?: number
+                    spouse1_id?: number
+                    spouse2_id?: number
+                    marriage_date?: string | null
+                    divorce_date?: string | null
+                    created_at?: string
+                }
+            }
+            relationships: {
+                Row: {
+                    relationship_id: number
+                    person_id: number
+                    related_person_id: number
+                    relation_type: string
+                    created_at: string
+                }
+                Insert: {
+                    relationship_id?: number
+                    person_id: number
+                    related_person_id: number
+                    relation_type: string
+                    created_at?: string
+                }
+                Update: {
+                    relationship_id?: number
+                    person_id?: number
+                    related_person_id?: number
+                    relation_type?: string
                     created_at?: string
                 }
             }

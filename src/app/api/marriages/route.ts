@@ -1,3 +1,4 @@
+
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
@@ -5,10 +6,11 @@ export async function GET(request: Request) {
     const supabase = createClient();
 
     const { data, error } = await supabase
-        .from('families')
+        .from('marriages')
         .select(`
       *,
-      head:persons!fk_family_head(first_name, last_name)
+      spouse1:persons!marriages_spouse1_id_fkey(first_name, last_name),
+      spouse2:persons!marriages_spouse2_id_fkey(first_name, last_name)
     `);
 
     if (error) {
@@ -16,13 +18,13 @@ export async function GET(request: Request) {
     }
 
     // Map fields
-    const families = data?.map((family: any) => ({
-        ...family,
-        id: family.family_id,
-        head: family.head ? { full_name: `${family.head.first_name} ${family.head.last_name}` } : null
+    const marriages = data?.map((m: any) => ({
+        ...m,
+        spouse1: m.spouse1 ? { full_name: `${m.spouse1.first_name} ${m.spouse1.last_name}` } : null,
+        spouse2: m.spouse2 ? { full_name: `${m.spouse2.first_name} ${m.spouse2.last_name}` } : null
     }));
 
-    return NextResponse.json(families);
+    return NextResponse.json(marriages);
 }
 
 export async function POST(request: Request) {
@@ -30,12 +32,13 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const { data, error } = await supabase
-        .from('families')
+        .from('marriages')
         .insert(body)
         .select()
         .single();
 
     if (error) {
+        console.error(error);
         return NextResponse.json({ error: error.message }, { status: 400 });
     }
 

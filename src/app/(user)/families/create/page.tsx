@@ -13,7 +13,7 @@ export default function CreateFamilyPage() {
     const router = useRouter();
     const [citizens, setCitizens] = useState<any[]>([]);
     const [formData, setFormData] = useState({
-        ration_card_number: '',
+        family_name: '',
         address: '',
         head_id: ''
     });
@@ -49,12 +49,13 @@ export default function CreateFamilyPage() {
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="ration">Ration Card Number</Label>
+                            <Label htmlFor="family_name">Family Name</Label>
                             <Input
-                                id="ration"
-                                value={formData.ration_card_number}
-                                onChange={e => setFormData({ ...formData, ration_card_number: e.target.value })}
+                                id="family_name"
+                                value={formData.family_name}
+                                onChange={e => setFormData({ ...formData, family_name: e.target.value })}
                                 required
+                                placeholder="e.g. The Smith Family"
                             />
                         </div>
 

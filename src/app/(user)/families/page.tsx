@@ -44,7 +44,7 @@ export default function FamiliesPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Head of Family</TableHead>
-                                <TableHead>Ration Card</TableHead>
+                                <TableHead>Family Name</TableHead>
                                 <TableHead>Total Income</TableHead>
                                 <TableHead>Address</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
@@ -65,7 +65,7 @@ export default function FamiliesPage() {
                                 families.map((family) => (
                                     <TableRow key={family.id}>
                                         <TableCell className="font-medium">{family.head?.full_name || 'N/A'}</TableCell>
-                                        <TableCell>{family.ration_card_number}</TableCell>
+                                        <TableCell>{family.family_name || 'N/A'}</TableCell>
                                         <TableCell>₹{family.total_annual_income}</TableCell>
                                         <TableCell>{family.address}</TableCell>
                                         <TableCell className="text-right">

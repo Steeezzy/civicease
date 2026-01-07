@@ -23,7 +23,7 @@ export default function Dashboard() {
                 { count: familiesCount },
                 { count: servicesCount }
             ] = await Promise.all([
-                supabase.from('citizens').select('*', { count: 'exact', head: true }),
+                supabase.from('persons').select('*', { count: 'exact', head: true }),
                 supabase.from('families').select('*', { count: 'exact', head: true }),
                 supabase.from('service_records').select('*', { count: 'exact', head: true }).gte('issue_date', new Date().toISOString().split('T')[0])
             ]);
