@@ -8,7 +8,7 @@ export async function GET(request: Request) {
         .from('families')
         .select(`
       *,
-      head:persons!fk_family_head(first_name, last_name)
+      members:persons(first_name, last_name)
     `);
 
     if (error) {
@@ -19,7 +19,8 @@ export async function GET(request: Request) {
     const families = data?.map((family: any) => ({
         ...family,
         id: family.family_id,
-        head: family.head ? { full_name: `${family.head.first_name} ${family.head.last_name}` } : null
+        // Since schema has no explicit head, use the first member as contact/head
+        head: family.members?.[0] ? { full_name: `${family.members[0].first_name} ${family.members[0].last_name}` } : null
     }));
 
     return NextResponse.json(families);
@@ -28,16 +29,34 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     const supabase = createClient();
     const body = await request.json();
+    const { family_name, address, head_id } = body;
 
-    const { data, error } = await supabase
+    // 1. Create Family
+    const { data: family, error: familyError } = await supabase
         .from('families')
-        .insert(body)
+        .insert({
+            family_name,
+            address
+        })
         .select()
         .single();
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+    if (familyError) {
+        return NextResponse.json({ error: familyError.message }, { status: 400 });
     }
 
-    return NextResponse.json(data);
+    // 2. Assign Head to Family (Update Person)
+    if (head_id && family) {
+        const { error: personError } = await supabase
+            .from('persons')
+            .update({ family_id: family.family_id })
+            .eq('person_id', head_id);
+
+        if (personError) {
+            console.error("Failed to assign head to family:", personError);
+            // Optionally rollback family creation or just warn
+        }
+    }
+
+    return NextResponse.json(family);
 }

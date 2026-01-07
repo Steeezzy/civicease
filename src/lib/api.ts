@@ -5,7 +5,7 @@ const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const API_Base = 'http://localhost:4000/api';
+const API_Base = '/api';
 
 export const api = {
     get: async (url: string) => {

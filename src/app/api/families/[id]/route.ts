@@ -9,7 +9,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
         .from('families')
         .select(`
       *,
-      head:persons!fk_family_head(first_name, last_name),
       members:persons(*)
     `)
         .eq('family_id', id)
@@ -22,7 +21,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     // Map fields
     const family = {
         ...data,
-        head: data.head ? { full_name: `${data.head.first_name} ${data.head.last_name}` } : null,
+        head: data.members?.[0] ? { full_name: `${data.members[0].first_name} ${data.members[0].last_name}` } : null,
         members: data.members?.map((m: any) => ({
             id: m.person_id,
             full_name: `${m.first_name} ${m.last_name}`,
