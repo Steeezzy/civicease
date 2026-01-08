@@ -12,11 +12,12 @@ export async function GET(request: Request) {
         .from('service_records')
         .select(`
             *,
+            *,
             service_types (
                 id,
                 name
             ),
-            citizen:persons!service_records_person_id_fkey (
+            citizen:persons (
                 person_id,
                 first_name,
                 last_name,
@@ -24,11 +25,7 @@ export async function GET(request: Request) {
                 aadhar_number,
                 families (
                     family_id,
-                    family_name,
-                    head:persons!fk_family_head (
-                        first_name,
-                        last_name
-                    )
+                    family_name
                 )
             )
         `)
