@@ -42,7 +42,7 @@ export async function signup(formData: FormData) {
 
     // Validate inputs (basic)
     if (!email || !password || !name) {
-        return { error: 'Missing fields' }
+        return redirect('/signup?message=Missing fields')
     }
 
     // SECURITY: Enforce Government Domain

@@ -29,6 +29,50 @@ export interface Database {
                     created_at?: string
                 }
             }
+            complaints: {
+                Row: {
+                    id: string
+                    user_id: string
+                    title: string
+                    category: 'Roads' | 'Water' | 'Electricity' | 'Sanitation' | 'Public Safety' | 'Others'
+                    description: string
+                    location: string
+                    priority: 'Low' | 'Medium' | 'High'
+                    status: 'submitted' | 'in_progress' | 'resolved' | 'rejected'
+                    admin_remark: string | null
+                    created_at: string
+                    updated_at: string
+                    resolved_at: string | null
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    title: string
+                    category: 'Roads' | 'Water' | 'Electricity' | 'Sanitation' | 'Public Safety' | 'Others'
+                    description: string
+                    location: string
+                    priority?: 'Low' | 'Medium' | 'High'
+                    status?: 'submitted' | 'in_progress' | 'resolved' | 'rejected'
+                    admin_remark?: string | null
+                    created_at?: string
+                    updated_at?: string
+                    resolved_at?: string | null
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    title?: string
+                    category?: 'Roads' | 'Water' | 'Electricity' | 'Sanitation' | 'Public Safety' | 'Others'
+                    description?: string
+                    location?: string
+                    priority?: 'Low' | 'Medium' | 'High'
+                    status?: 'submitted' | 'in_progress' | 'resolved' | 'rejected'
+                    admin_remark?: string | null
+                    created_at?: string
+                    updated_at?: string
+                    resolved_at?: string | null
+                }
+            }
             families: {
                 Row: {
                     family_id: number
