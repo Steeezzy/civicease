@@ -33,43 +33,39 @@ export default function ServicesListPage() {
             });
     }, []);
 
-    useEffect(() => {
-        const fetchServices = async () => {
-            setLoading(true);
-            try {
-                const params = new URLSearchParams();
-                if (filters.service_type_id) params.append('service_type_id', filters.service_type_id);
-                if (filters.family_name) params.append('family_name', filters.family_name);
+    const fetchServices = async () => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (filters.service_type_id) params.append('service_type_id', filters.service_type_id);
+            if (filters.family_name) params.append('family_name', filters.family_name);
 
-                const res = await fetch(`/api/services?${params.toString()}`);
-                const data = await res.json();
+            const res = await fetch(`/api/services?${params.toString()}`);
+            const data = await res.json();
 
-                if (Array.isArray(data)) {
-                    setServices(data);
-                } else {
-                    console.error("Failed to fetch services:", data);
-                    setServices([]);
-                }
-            } catch (error) {
-                console.error("Error fetching services:", error);
+            if (Array.isArray(data)) {
+                setServices(data);
+            } else {
+                console.error("Failed to fetch services:", data);
                 setServices([]);
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error("Error fetching services:", error);
+            setServices([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        const timeoutId = setTimeout(() => {
-            fetchServices();
-        }, 500); // Debounce search
-
-        return () => clearTimeout(timeoutId);
-    }, [filters]);
+    useEffect(() => {
+        fetchServices();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Only fetch on mount
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Certificates</h1>
-                {/* Issue button removed as per requirements */}
             </div>
 
             <Card>
@@ -77,7 +73,7 @@ export default function ServicesListPage() {
                     <CardTitle>Search Certificates</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 items-end">
                         <div className="flex-1 space-y-2">
                             <Label htmlFor="family_name">Family Name (Head of Family)</Label>
                             <Input
@@ -85,6 +81,7 @@ export default function ServicesListPage() {
                                 placeholder="Search by Family Name..."
                                 value={filters.family_name}
                                 onChange={(e) => setFilters({ ...filters, family_name: e.target.value })}
+                                onKeyDown={(e) => e.key === 'Enter' && fetchServices()}
                             />
                         </div>
                         <div className="flex-1 space-y-2">
@@ -101,6 +98,7 @@ export default function ServicesListPage() {
                                 ))}
                             </select>
                         </div>
+                        <Button onClick={fetchServices}>Search</Button>
                     </div>
                 </CardContent>
             </Card>

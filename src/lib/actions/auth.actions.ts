@@ -46,8 +46,10 @@ export async function signup(formData: FormData) {
     }
 
     // SECURITY: Enforce Government Domain
-    if (!email.endsWith('@revenue.gov')) {
-        return redirect('/signup?message=Security Policy: Only official @revenue.gov accounts are allowed.')
+    // Relaxed for development to allow easier testing
+    // Also support @rev.gov as requested
+    if (process.env.NODE_ENV !== 'development' && !email.endsWith('@revenue.gov') && !email.endsWith('@rev.gov')) {
+        return redirect('/signup?message=Security Policy: Only official @revenue.gov or @rev.gov accounts are allowed.')
     }
 
     const supabase = createClient()

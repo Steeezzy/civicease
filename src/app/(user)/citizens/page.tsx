@@ -13,11 +13,21 @@ export default function CitizensPage() {
 
     useEffect(() => {
         fetch('/api/citizens')
-            .then(res => res.json())
-            .then(data => {
-                setCitizens(data);
-                setLoading(false);
-            });
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) {
+                    console.error("Failed to fetch citizens:", data);
+                    // Optionally set an error state here to show in UI
+                    setCitizens([]);
+                } else {
+                    setCitizens(data);
+                }
+            })
+            .catch(err => {
+                console.error("Network error fetching citizens:", err);
+                setCitizens([]);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     return (
