@@ -1,19 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
-export default function ServicesListPage() {
+export default function ServicesPage() {
+    const router = useRouter();
     const [services, setServices] = useState<any[]>([]);
     const [serviceTypes, setServiceTypes] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
-        service_type_id: '',
-        family_name: ''
+        service_type_id: "",
+        family_name: ""
     });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Fetch Service Types
@@ -33,39 +37,43 @@ export default function ServicesListPage() {
             });
     }, []);
 
-    const fetchServices = async () => {
-        setLoading(true);
-        try {
-            const params = new URLSearchParams();
-            if (filters.service_type_id) params.append('service_type_id', filters.service_type_id);
-            if (filters.family_name) params.append('family_name', filters.family_name);
-
-            const res = await fetch(`/api/services?${params.toString()}`);
-            const data = await res.json();
-
-            if (Array.isArray(data)) {
-                setServices(data);
-            } else {
-                console.error("Failed to fetch services:", data);
-                setServices([]);
-            }
-        } catch (error) {
-            console.error("Error fetching services:", error);
-            setServices([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchServices();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Only fetch on mount
+        const fetchServices = async () => {
+            setLoading(true);
+            try {
+                const params = new URLSearchParams();
+                if (filters.service_type_id) params.append('service_type_id', filters.service_type_id);
+                if (filters.family_name) params.append('family_name', filters.family_name);
+
+                const res = await fetch(`/api/services?${params.toString()}`);
+                const data = await res.json();
+
+                if (Array.isArray(data)) {
+                    setServices(data);
+                } else {
+                    console.error("Failed to fetch services:", data);
+                    setServices([]);
+                }
+            } catch (error) {
+                console.error("Error fetching services:", error);
+                setServices([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timeoutId = setTimeout(() => {
+            fetchServices();
+        }, 500); // Debounce search
+
+        return () => clearTimeout(timeoutId);
+    }, [filters]);
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Certificates</h1>
+                {/* Issue button removed as per requirements */}
             </div>
 
             <Card>
@@ -73,7 +81,7 @@ export default function ServicesListPage() {
                     <CardTitle>Search Certificates</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex gap-4 items-end">
+                    <div className="flex gap-4">
                         <div className="flex-1 space-y-2">
                             <Label htmlFor="family_name">Family Name (Head of Family)</Label>
                             <Input
@@ -81,7 +89,6 @@ export default function ServicesListPage() {
                                 placeholder="Search by Family Name..."
                                 value={filters.family_name}
                                 onChange={(e) => setFilters({ ...filters, family_name: e.target.value })}
-                                onKeyDown={(e) => e.key === 'Enter' && fetchServices()}
                             />
                         </div>
                         <div className="flex-1 space-y-2">
@@ -98,7 +105,6 @@ export default function ServicesListPage() {
                                 ))}
                             </select>
                         </div>
-                        <Button onClick={fetchServices}>Search</Button>
                     </div>
                 </CardContent>
             </Card>

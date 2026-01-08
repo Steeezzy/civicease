@@ -73,7 +73,7 @@ export default function CitizensPage() {
                                         <TableCell className="font-medium">{citizen.full_name}</TableCell>
                                         <TableCell>{citizen.phone || 'N/A'}</TableCell>
                                         <TableCell>{citizen.aadhar_number || 'N/A'}</TableCell>
-                                        <TableCell>{citizen.families ? `Address: ${citizen.families.address}` : 'Unassigned'}</TableCell>
+                                        <TableCell>{citizen.families ? `Ration: ${citizen.families.ration_card_number}` : 'Unassigned'}</TableCell>
                                         <TableCell className="text-right">
                                             <Button variant="ghost" size="sm">View</Button>
                                         </TableCell>
